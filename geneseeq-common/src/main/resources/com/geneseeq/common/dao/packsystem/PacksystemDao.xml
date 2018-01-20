@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.dao.packsystem.PacksystemDao">
+	<!-- 获取运输方式 -->
+	<select id="listSYS_SAMPLE_PACK_SYSTEM"
+		resultType="com.geneseeq.common.pojo.packsystem.SamplePackSystemResponseVO">
+		select id,name,box_size from SYS_TRANS_BOX
+	</select>
+
+	<select id="getSamplePackById"
+		resultType="com.geneseeq.common.pojo.packsystem.SamplePackSystemResponseVO"
+		parameterType="java.lang.String">
+		select id,name,box_size from SYS_TRANS_BOX where id=#{id}
+	</select>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.geneseeq.common.mysqldao.reportfile.ReportFileUploadDao">
+    <sql id="reportFileUpload">
+        batch_no as batchNo,
+        batch_id as batchId,
+        process_status as processStatus,
+        process_case as processCase,
+        file_id as fileId,
+        report_id as reportId,
+        file_name as fileName,
+        file_type as fileType,
+        file_category as fileCategory,
+        file_status as fileStatus,
+        local_path as localPath,
+        servers_path as serversPath,
+        is_publish as isPublish,
+        is_valid as isValid
+    </sql>
+
+
+
+    <select id="getReportFileUploadByProcessStatus" parameterType="String" resultType="com.geneseeq.common.domain.reportfile.ReportFileUpload">
+        select <include refid="reportFileUpload"/> from sample_order_report_file_to  where process_status=#{processStatus}
+    </select>
+
+
+</mapper>

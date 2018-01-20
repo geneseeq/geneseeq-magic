@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.dao.user.UserDao">
+	<!--销售 -->
+	<select id="listUser" resultType="com.geneseeq.common.pojo.user.UserInfoResponseVO">
+		select ID,NAME from T_USER where DEPARTMENT_ID like '113%' order by
+		NAME<!-- concat(concat('%','113','%') -->
+	</select>
+
+	<select id="getUserById" resultType="com.geneseeq.common.pojo.user.UserInfoResponseVO"
+		parameterType="String">
+		select NAME from T_USER where id=#{id}
+	</select>
+
+	<select id="getUserIdByName" resultType="com.geneseeq.common.pojo.user.SalerUserVO"
+		parameterType="String">
+		select id as userid from T_USER where name=#{username}
+	</select>
+
+	<select id="getUserOrderList" parameterType="com.geneseeq.common.pojo.user.UserOrderSearchingVO"
+		resultType="com.geneseeq.common.pojo.user.UserOrderVO">
+		select id as orderid,name as customer_name,fee as order_amount ,
+		is_fee as payment_state,state_name as state, create_date as
+		order_created_at,FIRST_RECEIVED_DATE as send_sample_date
+		from
+		SAMPLE_ORDER o
+		<where>
+			(o.COMMISSIONER=#{userid} or o.CREATE_USER = #{userid})
+
+			<if test="start_date != null ">
+				AND o.create_date &gt;= to_date(#{start_date}
+				,'yyyy-MM-dd')
+			</if>
+
+			<if test="end_date != null">
+				AND o.create_date &lt;= to_date(#{end_date}
+				,'yyyy-MM-dd')
+			</if>
+		</where>
+
+		ORDER BY o.create_date DESC
+	</select>
+
+
+	<select id="getSalerPerformanceList"
+		parameterType="com.geneseeq.common.pojo.user.SalerPerformanceSearchingVO"
+		resultType="com.geneseeq.common.pojo.user.SalerPerformanceVO">
+
+		with ta as (
+		select t.COMMISSIONER , count(t.ID) as order_count,
+		sum(case when t.FEE is null then 0
+		when t.FEE =' ' then 0
+		when
+		instr(t.FEE,'免费')>=1 then 0
+		else to_number(trim(t.FEE)) end ) as
+		sum_fee
+		from sample_order t
+
+		<where>
+			1 =1
+			<if test="start_date != null ">
+				AND t.create_date &gt;= to_date(#{start_date}
+				,'yyyy-MM-dd')
+			</if>
+
+			<if test="end_date != null">
+				AND t.create_date &lt;= to_date(#{end_date}
+				,'yyyy-MM-dd')
+			</if>
+		</where>
+
+		group by t.COMMISSIONER
+		)
+
+		select tb.ID as userid,tb.NAME as name
+		,ta.order_count as order_amount,ta.sum_fee as sale_amount from t_user
+		tb left join
+		ta
+
+		on (tb.ID=ta.COMMISSIONER)
+
+		<where>
+			1=1
+			<if test="userlist != null and userlist.size() &gt; 0">
+				AND tb.id IN
+				<foreach collection="userlist" index="index" item="item"
+					open="(" separator="," close=")">
+					#{item.userid}
+				</foreach>
+
+			</if>
+
+		</where>
+
+
+	</select>
+
+</mapper>

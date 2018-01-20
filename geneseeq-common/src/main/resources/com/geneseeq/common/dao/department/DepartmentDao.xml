@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.dao.department.DepartmentDao">
+	<!--科室 -->
+	<select id="listInspection_Departments"
+		resultType="com.geneseeq.common.pojo.department.DepartmentResponseVO">
+		select ID,NAME FROM T_DIC_TYPE WHERE TYPE='ks' and
+		state='1'
+	</select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.dao.cancer.CancerDao">
+	<select id="listWeichat_Cancer"
+		resultType="com.geneseeq.common.pojo.cancer.WeichatCancerResponseVO">
+		with t1 as (
+		SELECT
+		a.CANCER_TYPE_ID, listagg(
+		a.id,',')within group(order by a.id) as
+		ONE_NAME_id, listagg(
+		a.CANCER_TYPE_SEED_ONE_NAME,',')within
+		group(order by a.id) as ONE_NAME
+		FROM WEICHAT_CANCER_TYPE_SEED_ONE a
+		group by a.CANCER_TYPE_ID),
+		t2 as (
+		select c.CANCER_TYPE_ID, listagg(
+		c.id,',')within group(order by c.id)
+		as
+		TWO_NAME_id, listagg(
+		c.CANCER_TYPE_SEED_TWO_NAME,',')within
+		group(order by
+		c.id) as TWO_NAME
+		from
+		WEICHAT_CANCER_TYPE_SEED_TWO c
+		group by c.CANCER_TYPE_ID
+		)
+		select
+		t.*,t1.ONE_NAME_id,t1.ONE_NAME,t2.TWO_NAME_id,t2.TWO_NAME
+		from
+		WEICHAT_CANCER_TYPE t
+		left join t1 on (t.id=t1.CANCER_TYPE_ID )
+		left
+		join t2 on (t.id=t2.CANCER_TYPE_ID)
+	</select>
+
+
+</mapper>

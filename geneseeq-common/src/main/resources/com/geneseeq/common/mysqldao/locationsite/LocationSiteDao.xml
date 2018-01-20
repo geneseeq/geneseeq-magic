@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.mysqldao.locationsite.LocationSiteDao">
+
+
+    <!-- 插入mysql express -->
+    <insert id="insertLocationSite" parameterType="com.geneseeq.common.pojo.express.ExpressInfoVO">
+		insert into sample_order_express_site_t
+		(site_type,record_id,longitude,latitude,site_name,remarks,created_by,created_at,updated_by,updated_at)
+        values
+        (#{siteType},#{recordId},#{longitude},#{latitude},#{siteName},#{remarks},#{created_by},#{created_at},#{updated_by},#{updated_at})
+	</insert>
+
+
+
+
+</mapper>
+

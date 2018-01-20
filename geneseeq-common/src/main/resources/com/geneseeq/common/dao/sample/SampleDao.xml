@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.dao.sample.SampleDao">
+    <!--样本信息 -->
+
+
+    <select id="getSampleInfoListByOrderId" resultType="com.geneseeq.common.domain.sample.SampleInfo">
+        select code as code, sample_type2 as type from sample_info
+        where order_num = #{orderId}
+    </select>
+
+    <select id="getInLaboStateCountBySampleCode" resultType="Long">
+        SELECT COUNT (t.id)
+        FROM T_SAMPLE_STATE t
+        WHERE     t.SAMPLE_CODE = #{code}
+        AND t.STAGE_NAME &lt;&gt; '开箱检验'
+        AND t.STAGE_NAME &lt;&gt; '样本入库'
+    </select>
+
+
+    <select id="getSampleVOListByOrderId" resultType="com.geneseeq.common.pojo.sample.OrderSampleVO">
+        select
+        si.code as SampleCode,
+        si.sample_type2 as SampleType,
+        case
+        when exists (select 1
+        from T_SAMPLE_STATE t
+        where si.code = t.SAMPLE_CODE
+        and t.STAGE_NAME &lt;&gt; all('样本入库', '开箱检验')) then
+        '已进入实验流程'
+        else
+        '未进入实验流程'
+        end as SampleIsInLabo
+        from sample_info si
+        where si.order_num =  #{orderId}
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.mysqldao.express.InternalExpressDao">
+
+    <!-- 获取快递信息 -->
+    <select id="getExpressInfoList" resultType="com.geneseeq.common.domain.express.Express">
+		select
+		express_id,express_no from express_info_t
+	</select>
+
+    <!-- 插入mysql express -->
+    <insert id="insertExpressInfo" parameterType="com.geneseeq.common.pojo.express.ExpressInfoVO">
+		insert into
+		express_info_t(express_no,express_company_id,express_company,mode_of_transport_id,mode_of_transport,box_size,send_to_address,created_by_id,created_by_name,created_at,process_status,process_case,updated_by,updated_at)
+		values(#{express_no},#{express_company_id},#{express_company},#{mode_of_transport_id},#{mode_of_transport},#{box_size},#{send_to_address},#{created_by_id},#{created_by_name},#{created_at},#{process_status},#{process_case},#{updated_by},#{updated_at})
+	</insert>
+
+
+	<!-- 查询是否有expressNo -->
+	<select id="serExpressNo" resultType="int" parameterType="String">
+		select count(1) from express_info_t where express_no=#{expressNo}
+	</select>
+
+    <update id="updateExpress" parameterType="String">
+		update express_info_t t set
+		t.process_status='02',t.process_case='lims插入成功',t.updated_at=#{updatetime}
+		where t.express_no=#{express_no}
+	</update>
+
+    <update id="updataExdata_sync_status" parameterType="String">
+		update express_info_t set data_sync_status=#{status},updated_at=#{uptime} where express_no=#{expressno}
+	</update>
+
+    <select id="getExpressInfoVOByNo" resultType="com.geneseeq.common.pojo.express.ExpressInfoVO"
+            parameterType="String">
+		select express_id from express_info_t where
+		express_no=#{express_no}
+	</select>
+
+    <select id="getExpressDataByExpressNo" resultType="com.geneseeq.common.pojo.express.ExpressData"
+            parameterType="String">
+		select t.express_no as expressno,t.express_time as ftime,t.context from express_status_detail_t t where express_no=#{ExpressNo}
+	</select>
+
+</mapper>
+

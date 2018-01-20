@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geneseeq.common.mysqldao.order.InternalOrderDao">
+    <insert id="insertsampleOrder" parameterType="com.geneseeq.common.pojo.order.SampleOrderTVO">
+		insert into
+		sample_order_t(order_no,project_id,patient_name,gender,idcard,tel_no,medical_institutions_id,medical_institutions,inspection_department_id,inspection_department,attending_doctor_id,attending_doctor,product_id,product_name,cancer_type_id,cancer_type_name,cancer_type_seed_one_id,cancer_type_seed_one_name,cancer_type_seed_two_id,cancer_type_seed_two_name,commissioner_id,commissioner,is_fee,report_show_flag,remarks,created_by_id,created_by_name,created_at,process_status,process_case,updated_by,updated_at)
+		values(#{order_no},#{project_id},#{patient_name},#{gender},#{idcard},#{tel_no},#{medical_institutions_id},#{medical_institutions},#{inspection_department_id},#{inspection_department},#{attending_doctor_id},#{attending_doctor},#{product_id},#{product_name},#{cancer_type_id},#{cancer_type_name},#{cancer_type_seed_one_id},#{cancer_type_seed_one_name},#{cancer_type_seed_two_id},#{cancer_type_seed_two_name},#{commissioner_id},#{commissioner},#{is_fee},#{report_show_flag},#{remarks},#{created_by_id},#{created_by_name},#{created_at},#{process_status},#{process_case},#{updated_by},#{updated_at})
+	</insert>
+
+    <select id="getOrderByNo" resultType="com.geneseeq.common.pojo.order.SampleOrderIdVO"
+            parameterType="String">
+		select order_id from sample_order_t where order_no=#{order_no}
+	</select>
+
+    <select id="getOrderPhoneNumber" resultType="com.geneseeq.common.pojo.order.OrderNumber"
+            parameterType="String">
+		select t.order_no as orderNumber,t.tel_no as phoneNumber from sample_order_t t where t.updated_at between #{updateTimeStart} and #{updateTimeEnd} and t.process_status='02'
+	</select>
+
+    <select id="getOrderByCaseAndNo" resultType="String" parameterType="String">
+		select t.order_no from sample_order_t t where t.process_case='处理失败' and t.order_no=#{orderNo}
+	</select>
+
+    <select id="searchOrderNoByNo" resultType="int"
+            parameterType="String">
+		select count(1) from sample_order_t t where t.order_no=#{order_no} AND t.process_status=#{status}
+	</select>
+
+    <update id="updateSampleOrder" parameterType="String">
+		update
+		sample_order_t t set t.process_status='02',t.process_case='处理成功'
+		where t.order_no=#{order_no}
+	</update>
+
+    <update id="updateFailSampleOrder" parameterType="String">
+		update
+		sample_order_t t set t.process_status='99',t.process_case='处理失败'
+		where t.order_no=#{order_no}
+	</update>
+
+    <select id="getExpressNosByOrderNo" resultType="com.geneseeq.common.pojo.express.ExpressNoVO"
+            parameterType="String">
+		select b.express_no,b.express_id from sample_order_t
+		a,express_info_t
+		b,sample_order_express_t c where
+		a.order_no=#{order_no} and
+		a.order_id=c.order_id and
+		c.express_id=b.express_id
+	</select>
+</mapper>
